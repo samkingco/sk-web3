@@ -1,0 +1,5 @@
+cache
+
+# Ignore build output
+out/**/*.json
+

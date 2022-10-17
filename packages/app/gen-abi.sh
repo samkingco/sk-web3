@@ -1,5 +1,5 @@
 #!/bin/bash
-# Generates d.ts files for ABI JSON output, and saves them in src/abis
+# Generates .ts files for ABI JSON output, and saves them in src/abis
 
 SRC_CONTRACTS="${PWD%/*}/contracts/src"
 ABI_INPUT="${PWD%/*}/contracts/out"
@@ -11,7 +11,7 @@ ABI_PATTERN="*.abi.*json"
 # Ensure the output directory exists
 mkdir -p $ABI_OUTPUT
 
-# Remove existing declaration files
+# Remove existing typescript files
 rm $ABI_OUTPUT/*.*
 
 # Get the ABI JSON files from contracts/out/
@@ -35,7 +35,7 @@ do
     # If the ABI and contract name match, then we know it's a contract from
     # our src directory, not a dependency or test
     if [ "$ABI_NAME" = "$CONTRACT_NAME" ]; then
-        # Create our d.ts file with the JSON contents of the ABI
+        # Create our .ts file with the JSON contents of the ABI
         text=$(cat $abi)
         printf "const abi = $(echo ${text}) as const;\nexport default abi;" > "$ABI_OUTPUT/$ABI_NAME.ts"
     fi

@@ -7,7 +7,6 @@ ABI_OUTPUT="${PWD}/src/abis"
 
 SOL_PATTERN="*.*sol"
 ABI_PATTERN="*.abi.*json"
-DECL_POSTFIX=".d.ts"
 
 # Ensure the output directory exists
 mkdir -p $ABI_OUTPUT
@@ -38,7 +37,7 @@ do
     if [ "$ABI_NAME" = "$CONTRACT_NAME" ]; then
         # Create our d.ts file with the JSON contents of the ABI
         text=$(cat $abi)
-        printf "declare const data: $(echo ${text})\nexport = data" > "$ABI_OUTPUT/$ABI_NAME.d.ts"
+        printf "const abi = $(echo ${text}) as const;\nexport default abi;" > "$ABI_OUTPUT/$ABI_NAME.ts"
     fi
   done
 done

@@ -1,12 +1,16 @@
 import { useCallback } from "react";
 import { useNetwork } from "wagmi";
+import { targetChainId } from "../utils/contracts";
 
 export function useOpenSea() {
   const { chain } = useNetwork();
-  let openSeaUrl = "https://opensea.io";
-  let assetName = chain?.id === 1 ? "ethereum" : chain?.name.toLowerCase();
+  const chainId = chain ? chain.id : targetChainId;
 
-  if (chain?.testnet) {
+  let openSeaUrl = "https://opensea.io";
+  let assetName =
+    chainId !== 1 && chain ? chain.name.toLowerCase() : "ethereum";
+
+  if (chainId !== 1) {
     openSeaUrl = "https://testnets.opensea.io";
   }
 

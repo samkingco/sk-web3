@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "abi": "sh gen-abi.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -27,7 +28,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.3",
     "react-query": "^3.39.2",
-    "wagmi": "^0.7.3"
+    "wagmi": "^0.7.5"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.13.7",

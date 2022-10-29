@@ -1,14 +1,15 @@
 import { useCallback } from "react";
-import { etherscanBlockExplorers, useNetwork } from "wagmi";
+import { etherscanBlockExplorers } from "wagmi";
+import { chains } from "../components/EthereumProviders";
 import { targetChainId } from "../utils/contracts";
 
 export function useEtherscan() {
-  const { chain } = useNetwork();
-  const chainId = chain ? chain.id : targetChainId;
+  const chain = chains.find((i) => i.id === targetChainId) || chains[0];
 
   let explorerURL = etherscanBlockExplorers.mainnet.url;
-  if (chainId === 5) {
-    explorerURL = etherscanBlockExplorers.goerli.url;
+  if (chain.id !== 1) {
+    // @ts-ignore
+    explorerURL = etherscanBlockExplorers[chain.name].url;
   }
 
   const getTransactionUrl = useCallback(

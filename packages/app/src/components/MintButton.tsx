@@ -16,10 +16,17 @@ import { LoadingIndicator } from "./LoadingIndicator";
 import { Mono } from "./Typography";
 
 export function MintButton() {
+  const { address } = useAccount();
   const isMounted = useIsMounted();
   const { data: price } = useContractRead({
     ...exampleNFT,
     functionName: "PRICE",
+  });
+
+  // Check if they have enough to mint
+  const { balance, hasInsufficientBalance } = useSufficientBalance({
+    address,
+    required: price || BigNumber.from(0),
   });
 
   // Prepare the mint transaction
@@ -59,6 +66,12 @@ export function MintButton() {
       >
         Mint a token
       </Button>
+
+      {hasInsufficientBalance && price && (
+        <Mono subdued margin="16 0 0">
+          Insufficient balance for minting. Need {formatEther(price)} ETH
+        </Mono>
+      )}
 
       {isWaitingOnWallet && (
         <Mono subdued margin="16 0 0">

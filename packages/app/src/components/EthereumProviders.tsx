@@ -16,14 +16,11 @@ import { targetChainId } from "../utils/contracts";
 // TODO: Replace with the project name, will show when connecting a wallet
 const appName = "SK web3";
 
-// Filter chains to target chain ID
-const targetChains = defaultChains.filter((c) => c.id === targetChainId);
-
 // Get the alchemy API key to set up a provider
 const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 
 export const { chains, provider, webSocketProvider } = configureChains(
-  targetChains,
+  defaultChains.filter((c) => c.id === targetChainId),
   [
     ...(alchemyApiKey ? [alchemyProvider({ apiKey: alchemyApiKey })] : []),
     publicProvider(),

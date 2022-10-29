@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 import { graphql } from "../graphql";
 import { graphQlClient } from "../graphql/client";
 import { useIsMounted } from "../hooks/useIsMounted";
-import { useOpenSea } from "../hooks/useOpenSea";
+import { useMarketplace } from "../hooks/useMarketplace";
 import { exampleNFT } from "../utils/contracts";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { Body, Subheading } from "./Typography";
@@ -32,7 +32,7 @@ export function Inventory() {
     }
   );
 
-  const { getAssetUrl } = useOpenSea();
+  const { getOpenSeaUrl } = useMarketplace();
 
   if (!isMounted || !address) return null;
 
@@ -53,7 +53,7 @@ export function Inventory() {
             {data.tokens.map((token) => (
               <a
                 key={token.id}
-                href={getAssetUrl(exampleNFT.address, token.id)}
+                href={getOpenSeaUrl(exampleNFT.address, token.id)}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -1,38 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
-import { graphql } from "../graphql";
-import { graphQlClient } from "../graphql/client";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { useMarketplace } from "../hooks/useMarketplace";
 import { exampleNFT } from "../utils/contracts";
+import { trpc } from "../utils/trpc";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { Body, Subheading } from "./Typography";
 
-const inventoryQueryDocument = graphql(/* GraphQL */ `
-  query Inventory($owner: String!) {
-    tokens(where: { owner: $owner }, first: 100) {
-      id
-      tokenURI
-    }
-  }
-`);
-
 export function Inventory() {
   const isMounted = useIsMounted();
+  const { getOpenSeaUrl } = useMarketplace();
   const { address } = useAccount();
 
-  const { data, isLoading } = useQuery(
-    ["inventoryByOwner", address],
-    async () =>
-      graphQlClient.request(inventoryQueryDocument, {
-        owner: address ? address.toLowerCase() : "",
-      }),
-    {
-      enabled: Boolean(address),
-    }
+  const { data, isLoading } = trpc.inventoryByOwner.useQuery(
+    { owner: address ? address.toLowerCase() : "" },
+    { enabled: Boolean(address) }
   );
-
-  const { getOpenSeaUrl } = useMarketplace();
 
   if (!isMounted || !address) return null;
 

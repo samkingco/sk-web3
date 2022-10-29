@@ -46,7 +46,7 @@ export function Inventory() {
 
   return (
     <div>
-      <Subheading margin="24 0 0">Inventory</Subheading>
+      <Subheading>Inventory</Subheading>
       <div>
         {data.tokens.length > 0 ? (
           <>

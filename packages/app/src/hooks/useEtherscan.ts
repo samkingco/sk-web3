@@ -9,7 +9,7 @@ export function useEtherscan() {
   let explorerURL = etherscanBlockExplorers.mainnet.url;
   if (chain.id !== 1) {
     // @ts-ignore
-    explorerURL = etherscanBlockExplorers[chain.name].url;
+    explorerURL = etherscanBlockExplorers[chain.network].url;
   }
 
   const getTransactionUrl = useCallback(

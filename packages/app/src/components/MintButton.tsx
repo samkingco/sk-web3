@@ -1,4 +1,6 @@
+import { BigNumber } from "ethers";
 import {
+  useAccount,
   useContractRead,
   useContractWrite,
   usePrepareContractWrite,
@@ -6,10 +8,12 @@ import {
 } from "wagmi";
 import { useEtherscan } from "../hooks/useEtherscan";
 import { useIsMounted } from "../hooks/useIsMounted";
+import { useSufficientBalance } from "../hooks/useSufficientBalance";
 import { exampleNFT } from "../utils/contracts";
+import { formatEther } from "../utils/format-ether";
 import { Button } from "./Button";
 import { LoadingIndicator } from "./LoadingIndicator";
-import { Body } from "./Typography";
+import { Mono } from "./Typography";
 
 export function MintButton() {
   const isMounted = useIsMounted();
@@ -19,7 +23,7 @@ export function MintButton() {
   });
 
   // Prepare the mint transaction
-  const { config, error } = usePrepareContractWrite({
+  const prepare = usePrepareContractWrite({
     ...exampleNFT,
     functionName: "mint",
     overrides: {
@@ -28,16 +32,12 @@ export function MintButton() {
     enabled: Boolean(price),
   });
 
-  if (error) {
-    console.error(error);
-  }
-
   // Send the transaction
   const {
     write,
     data: txData,
     isLoading: isWaitingOnWallet,
-  } = useContractWrite(config);
+  } = useContractWrite(prepare.config);
 
   // Watch the for the transaction receipt
   const { isLoading: isWaitingOnTx, isSuccess } = useWaitForTransaction({
@@ -52,30 +52,33 @@ export function MintButton() {
   if (!isMounted) return null;
 
   return (
-    <>
-      <Button disabled={Boolean(!write || error)} onClick={() => write?.()}>
+    <div>
+      <Button
+        disabled={Boolean(!write || prepare.error)}
+        onClick={() => write?.()}
+      >
         Mint a token
       </Button>
 
       {isWaitingOnWallet && (
-        <Body>
+        <Mono subdued margin="16 0 0">
           <LoadingIndicator /> Check wallet
-        </Body>
+        </Mono>
       )}
 
       {isWaitingOnTx && (
-        <Body>
+        <Mono subdued margin="16 0 0">
           <LoadingIndicator /> Transaction sent.{" "}
           {transactionLink && <a href={transactionLink}>View on explorer</a>}
-        </Body>
+        </Mono>
       )}
 
       {isSuccess && (
-        <Body>
+        <Mono subdued margin="16 0 0">
           Transaction sent successfully{" "}
           {transactionLink && <a href={transactionLink}>View on explorer</a>}
-        </Body>
+        </Mono>
       )}
-    </>
+    </div>
   );
 }

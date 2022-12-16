@@ -16,7 +16,7 @@ export function Inventory() {
     { enabled: Boolean(address) }
   );
 
-  if (!isMounted || !address) return null;
+  if (!address) return null;
 
   if (!data || isLoading) {
     return (

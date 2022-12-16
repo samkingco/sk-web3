@@ -56,7 +56,7 @@ export function MintButton() {
   const { getTransactionUrl } = useEtherscan();
   const transactionLink = txData && getTransactionUrl(txData.hash);
 
-  if (!isMounted) return null;
+  // if (!isMounted) return null;
 
   return (
     <div>

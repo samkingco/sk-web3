@@ -34,9 +34,9 @@ const Footer = styled.footer`
   margin-top: 3em;
 `;
 
-interface Props {
+type Props = {
   children: React.ReactNode;
-}
+};
 
 export function Layout({ children }: Props) {
   return (
@@ -44,9 +44,7 @@ export function Layout({ children }: Props) {
       <Main>
         <Header>
           <Title>
-            <Link href="/">
-              <a>Example NFT</a>
-            </Link>
+            <Link href="/">Example NFT</Link>
           </Title>
           <CustomConnectButton />
         </Header>
@@ -56,9 +54,7 @@ export function Layout({ children }: Props) {
 
       <Footer>
         <Mono subdued>
-          <Link href="/contract">
-            <a>Contract</a>
-          </Link>
+          <Link href="/contract">Contract</Link>
         </Mono>
       </Footer>
     </Wrapper>

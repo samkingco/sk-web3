@@ -2,10 +2,10 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import withMargin, { WithMarginProp } from "./withMargin";
 
-interface BaseTextProps extends WithMarginProp {
+type BaseTextProps = WithMarginProp & {
   subdued?: boolean;
   size?: "small" | "large";
-}
+};
 
 export const subdued = css`
   opacity: 0.48;

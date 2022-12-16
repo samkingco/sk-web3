@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { chains } from "../components/EthereumProviders";
+import { goerli, mainnet } from "wagmi/chains";
 import { targetChainId } from "../utils/contracts";
 
 export function useMarketplace() {
@@ -7,8 +7,10 @@ export function useMarketplace() {
   let looksRareUrl = "https://looksrare.org";
   let gemUrl = "https://gem.xyz";
 
-  const chain = chains.find((i) => i.id === targetChainId) || chains[0];
-  let assetName = chain.id === 1 ? "ethereum" : chain.name;
+  const chain =
+    [mainnet, goerli].find((i) => i.id === targetChainId) || mainnet;
+
+  const assetName = chain.id === 1 ? "ethereum" : chain.name;
 
   if (targetChainId !== 1) {
     openSeaUrl = "https://testnets.opensea.io";

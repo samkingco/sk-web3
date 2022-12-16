@@ -17,7 +17,6 @@ const Content = styled.div`
 
 export default function HomePage() {
   const isMounted = useIsMounted();
-
   const { data: greeting } = trpc.greeting.useQuery({ name: "web3 dev" });
 
   const { getAddressUrl } = useEtherscan();
@@ -40,8 +39,9 @@ export default function HomePage() {
           </Mono>
           <Mono>
             Minted:{" "}
-            {(isMounted ? totalSupply?.toNumber().toLocaleString() : null) ??
-              "-"}
+            {(isMounted && totalSupply ? totalSupply.toString() : null) ?? (
+              <>&hellip;</>
+            )}
           </Mono>
         </div>
         <MintButton />

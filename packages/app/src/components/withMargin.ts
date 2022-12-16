@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 
-export interface WithMarginProp {
+export type WithMarginProp = {
   margin?: string;
-}
+};
 
 const sizes = [2, 4, 8, 12, 16, 24, 32, 40, 64];
 

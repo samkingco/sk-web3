@@ -1,10 +1,6 @@
 import { ConnectKitProvider } from "connectkit";
-import {
-  configureChains,
-  createClient,
-  defaultChains,
-  WagmiConfig,
-} from "wagmi";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { goerli, mainnet } from "wagmi/chains";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -20,7 +16,7 @@ const appName = "SK web3";
 const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 
 export const { chains, provider, webSocketProvider } = configureChains(
-  defaultChains.filter((c) => c.id === targetChainId),
+  [mainnet, goerli].filter((c) => c.id === targetChainId),
   [
     ...(alchemyApiKey ? [alchemyProvider({ apiKey: alchemyApiKey })] : []),
     publicProvider(),
@@ -60,7 +56,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export function EthereumProviders({ children }: Props) {
+export function Web3Provider({ children }: Props) {
   return (
     <WagmiConfig client={client}>
       <ConnectKitProvider>{children}</ConnectKitProvider>

@@ -3,11 +3,13 @@ import { useAccount } from "wagmi";
 import { useENS } from "../hooks/useENS";
 import { Button } from "./Button";
 
-interface Props {
+type Props = {
   notConnectedText?: string;
-}
+  connectedText?: string;
+};
 
 export function CustomConnectButton({
+  connectedText,
   notConnectedText = "Connect Wallet",
 }: Props) {
   const { address: connectedAddress } = useAccount();
@@ -18,7 +20,7 @@ export function CustomConnectButton({
       {({ isConnected, show }) => {
         return (
           <Button onClick={show}>
-            {isConnected ? displayName : notConnectedText}
+            {isConnected ? connectedText || displayName : notConnectedText}
           </Button>
         );
       }}

@@ -11,12 +11,12 @@ export function Inventory() {
   const { getOpenSeaUrl } = useMarketplace();
   const { address } = useAccount();
 
-  const { data, isLoading } = trpc.inventoryByOwner.useQuery(
+  const { data, isLoading } = trpc.inventory.byOwner.useQuery(
     { owner: address ? address.toLowerCase() : "" },
     { enabled: Boolean(address) }
   );
 
-  if (!address) return null;
+  if (!isMounted || !address) return null;
 
   if (!data || isLoading) {
     return (

@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { CustomConnectButton } from "./CustomConnectButton";
+import { ButtonConnect } from "./ButtonConnect";
+import { ButtonSIWE } from "./ButtonSIWE";
 import { Mono, Title } from "./Typography";
 
 const Wrapper = styled.div`
   padding: 2em;
-  max-width: 48em;
   margin: 0 auto;
   min-height: 100%;
   display: flex;
@@ -22,8 +22,8 @@ const Header = styled.header`
   grid-gap: 2em;
   margin-bottom: 3em;
 
-  @media (min-width: 32rem) {
-    grid-template-columns: 1fr max-content;
+  @media (min-width: 40rem) {
+    grid-template-columns: 1fr max-content max-content;
     align-items: center;
   }
 `;
@@ -46,7 +46,8 @@ export function Layout({ children }: Props) {
           <Title>
             <Link href="/">Example NFT</Link>
           </Title>
-          <CustomConnectButton />
+          <ButtonConnect />
+          <ButtonSIWE />
         </Header>
 
         {children}

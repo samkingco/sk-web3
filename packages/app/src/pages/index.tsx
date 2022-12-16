@@ -1,4 +1,6 @@
 import styled from "@emotion/styled";
+import { GetServerSidePropsContext } from "next";
+import { unstable_getServerSession } from "next-auth/next";
 import { useContractRead } from "wagmi";
 import { Inventory } from "../components/Inventory";
 import { Layout } from "../components/Layout";
@@ -8,6 +10,7 @@ import { useEtherscan } from "../hooks/useEtherscan";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { exampleNFT } from "../utils/contracts";
 import { trpc } from "../utils/trpc";
+import { getAuthOptions } from "./api/auth/[...nextauth]";
 
 const Content = styled.div`
   display: flex;
@@ -15,9 +18,22 @@ const Content = styled.div`
   gap: 24px;
 `;
 
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return {
+    props: {
+      session: await unstable_getServerSession(
+        ctx.req,
+        ctx.res,
+        getAuthOptions(ctx.req)
+      ),
+    },
+  };
+}
+
 export default function HomePage() {
   const isMounted = useIsMounted();
-  const { data: greeting } = trpc.greeting.useQuery({ name: "web3 dev" });
+
+  const { data: greeting } = trpc.user.greeting.useQuery({ name: "web3 dev" });
 
   const { getAddressUrl } = useEtherscan();
   const { data: totalSupply } = useContractRead({

@@ -7,7 +7,6 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { useEtherscan } from "../hooks/useEtherscan";
-import { useIsMounted } from "../hooks/useIsMounted";
 import { useSufficientBalance } from "../hooks/useSufficientBalance";
 import { exampleNFT } from "../utils/contracts";
 import { formatEther } from "../utils/format-ether";
@@ -17,7 +16,6 @@ import { Mono } from "./Typography";
 
 export function MintButton() {
   const { address } = useAccount();
-  const isMounted = useIsMounted();
   const { data: price } = useContractRead({
     ...exampleNFT,
     functionName: "PRICE",
@@ -55,8 +53,6 @@ export function MintButton() {
   // Get the block explorer URL
   const { getTransactionUrl } = useEtherscan();
   const transactionLink = txData && getTransactionUrl(txData.hash);
-
-  // if (!isMounted) return null;
 
   return (
     <div>

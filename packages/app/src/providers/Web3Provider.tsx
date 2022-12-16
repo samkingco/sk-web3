@@ -1,4 +1,7 @@
-import { ConnectKitProvider } from "connectkit";
+import { ConnectKitProvider, SIWEProvider } from "connectkit";
+import { SIWEConfig } from "connectkit/build/components/Standard/SIWE/SIWEContext";
+import { getCsrfToken, getSession, signIn, signOut } from "next-auth/react";
+import { SiweMessage } from "siwe";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { goerli, mainnet } from "wagmi/chains";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
@@ -7,30 +10,25 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+import { ALCHEMY_API_KEY, APP_NAME } from "../utils/constants";
 import { targetChainId } from "../utils/contracts";
 
-// TODO: Replace with the project name, will show when connecting a wallet
-const appName = "SK web3";
-
-// Get the alchemy API key to set up a provider
-const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-
-export const { chains, provider, webSocketProvider } = configureChains(
+const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, goerli].filter((c) => c.id === targetChainId),
   [
-    ...(alchemyApiKey ? [alchemyProvider({ apiKey: alchemyApiKey })] : []),
+    ...(ALCHEMY_API_KEY ? [alchemyProvider({ apiKey: ALCHEMY_API_KEY })] : []),
     publicProvider(),
   ]
 );
 
-export const client = createClient({
+const client = createClient({
   autoConnect: true,
   connectors: [
     new MetaMaskConnector({ chains }),
     new CoinbaseWalletConnector({
       chains,
       options: {
-        appName,
+        appName: APP_NAME,
         headlessMode: true,
       },
     }),
@@ -52,14 +50,62 @@ export const client = createClient({
   webSocketProvider,
 });
 
-interface Props {
+export const siweConfig: SIWEConfig = {
+  createMessage: ({ address, chainId, nonce }) => {
+    return new SiweMessage({
+      version: "1",
+      domain: window.location.host,
+      uri: window.location.origin,
+      address,
+      chainId,
+      nonce,
+      statement: "Sign in with Ethereum.",
+    }).prepareMessage();
+  },
+  getSession: async () => {
+    const session = await getSession();
+    if (!session) return null;
+    return session;
+  },
+  getNonce: async () => {
+    const nonce = await getCsrfToken();
+    if (!nonce) throw new Error();
+    return nonce;
+  },
+  signOut: async () => {
+    try {
+      await signOut({ redirect: false });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  verifyMessage: async ({ message, signature }) => {
+    const response = await signIn("credentials", {
+      message: JSON.stringify(message),
+      redirect: false,
+      signature,
+    });
+    return response?.ok ?? false;
+  },
+};
+
+type Props = {
   children: React.ReactNode;
-}
+};
 
 export function Web3Provider({ children }: Props) {
   return (
     <WagmiConfig client={client}>
-      <ConnectKitProvider>{children}</ConnectKitProvider>
+      <SIWEProvider
+        {...siweConfig}
+        enabled={false}
+        signOutOnNetworkChange={false}
+        signOutOnDisconnect
+      >
+        <ConnectKitProvider>{children}</ConnectKitProvider>
+      </SIWEProvider>
     </WagmiConfig>
   );
 }

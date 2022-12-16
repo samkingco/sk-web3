@@ -8,7 +8,7 @@ type Props = {
   connectedText?: string;
 };
 
-export function CustomConnectButton({
+export function ButtonConnect({
   connectedText,
   notConnectedText = "Connect Wallet",
 }: Props) {
